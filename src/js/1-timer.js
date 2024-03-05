@@ -45,13 +45,16 @@ startBtn.addEventListener('click', () => {
 
   countdown();
 
+  startBtn.setAttribute('disabled', 'disabled');
+  input.setAttribute('disabled', 'disabled');
+
   function countdown() {
     setInterval(() => {
       const timeLeft = convertMs(diffBetweenDate);
 
       if (diffBetweenDate <= 0) {
-         startBtn.removeAttribute('disabled');
-         input.removeAttribute('disabled');
+        startBtn.removeAttribute('disabled');
+        input.removeAttribute('disabled');
         return;
       }
       const days = document.querySelector('.value[data-days]');
@@ -59,14 +62,13 @@ startBtn.addEventListener('click', () => {
       const minutes = document.querySelector('.value[data-minutes]');
       const seconds = document.querySelector('.value[data-seconds]');
 
-      days.innerHTML = timeLeft.days;
-      hours.innerHTML = timeLeft.hours;
-      minutes.innerHTML = timeLeft.minutes;
-      seconds.innerHTML = timeLeft.seconds;
+      
+      days.innerHTML = addZero(timeLeft.days);
+      hours.innerHTML = addZero(timeLeft.hours);
+      minutes.innerHTML = addZero(timeLeft.minutes);
+      seconds.innerHTML = addZero(timeLeft.seconds);
       diffBetweenDate -= 1000;
     }, 1000);
-    startBtn.setAttribute('disabled', 'disabled');
-    input.setAttribute('disabled', 'disabled');
   }
 });
 
@@ -89,6 +91,6 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-// console.log(convertMs(diffBetweenDate)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-// console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-// console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+function addZero(str) {
+ return String(str).padStart(2, '0');
+}
