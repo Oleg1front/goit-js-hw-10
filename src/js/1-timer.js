@@ -4,6 +4,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const startBtn = document.querySelector('button');
+const input = document.querySelector('#datetime-picker');
 
 // оголошуємо змінну в якій зберігається вибрана в календарі дата
 let userSelectedDate;
@@ -36,22 +37,36 @@ const options = {
 flatpickr('#datetime-picker', options);
 
 startBtn.addEventListener('click', () => {
-  const diffBetweenDate = userSelectedDate.getTime() - Date.now();
-  const timeLeft = convertMs(diffBetweenDate);
-  const days = document.querySelector('.value[data-days]');
-  const hours = document.querySelector('.value[data-hours]');
-  const minutes = document.querySelector('.value[data-minutes]');
-  const seconds = document.querySelector('.value[data-seconds]');
-  
-  countdown(timeLeft)
+  let diffBetweenDate = userSelectedDate.getTime() - Date.now();
 
-  function countdown(obj) {
+  if (diffBetweenDate <= 0) {
+    return;
+  }
+
+  countdown();
+
+  function countdown() {
     setInterval(() => {
+      const timeLeft = convertMs(diffBetweenDate);
+
+      if (diffBetweenDate <= 0) {
+         startBtn.removeAttribute('disabled');
+         input.removeAttribute('disabled');
+        return;
+      }
+      const days = document.querySelector('.value[data-days]');
+      const hours = document.querySelector('.value[data-hours]');
+      const minutes = document.querySelector('.value[data-minutes]');
+      const seconds = document.querySelector('.value[data-seconds]');
+
       days.innerHTML = timeLeft.days;
       hours.innerHTML = timeLeft.hours;
       minutes.innerHTML = timeLeft.minutes;
       seconds.innerHTML = timeLeft.seconds;
+      diffBetweenDate -= 1000;
     }, 1000);
+    startBtn.setAttribute('disabled', 'disabled');
+    input.setAttribute('disabled', 'disabled');
   }
 });
 
