@@ -5,7 +5,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const startBtn = document.querySelector('button');
 const input = document.querySelector('#datetime-picker');
-
+let intervalId = null;
 // оголошуємо змінну в якій зберігається вибрана в календарі дата
 // Об`єкт налаштувань flatpickr
 const options = {
@@ -35,7 +35,8 @@ const options = {
 const userSelectedDate = flatpickr('#datetime-picker', options);
 
 startBtn.addEventListener('click', () => {
-  let diffBetweenDate = userSelectedDate.selectedDates[0].getTime() - Date.now();
+  let diffBetweenDate =
+    userSelectedDate.selectedDates[0].getTime() - Date.now();
 
   countdown(diffBetweenDate);
 
@@ -45,7 +46,7 @@ startBtn.addEventListener('click', () => {
 
 // Функція відліку та виводу часу
 function countdown(diffBetweenDate) {
-  const intervalId = setInterval(() => {
+  intervalId = setInterval(() => {
     // Змінна для зберігання різниці часу між обраною датою і поточною
     const timeLeft = convertMs(diffBetweenDate);
 
@@ -53,6 +54,8 @@ function countdown(diffBetweenDate) {
     if (diffBetweenDate <= 0) {
       input.removeAttribute('disabled');
       clearInterval(intervalId);
+      diffBetweenDate = 0;
+
       return;
     }
     const days = document.querySelector('.value[data-days]');
