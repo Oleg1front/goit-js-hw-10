@@ -7,8 +7,6 @@ const startBtn = document.querySelector('button');
 const input = document.querySelector('#datetime-picker');
 
 // оголошуємо змінну в якій зберігається вибрана в календарі дата
-let userSelectedDate;
-
 // Об`єкт налаштувань flatpickr
 const options = {
   enableTime: true,
@@ -29,51 +27,48 @@ const options = {
     } else {
       startBtn.removeAttribute('disabled');
       // записуємо обрану дату в змінну
-      userSelectedDate = selectedDates[0];
+      // userSelectedDate = selectedDates[0];
     }
   },
 };
 
-flatpickr('#datetime-picker', options);
+const userSelectedDate = flatpickr('#datetime-picker', options);
 
 startBtn.addEventListener('click', () => {
-  let diffBetweenDate = userSelectedDate.getTime() - Date.now();
+  let diffBetweenDate = userSelectedDate.selectedDates[0].getTime() - Date.now();
 
-  if (diffBetweenDate <= 0) {
-    return;
-  }
-
-  countdown();
+  countdown(diffBetweenDate);
 
   startBtn.setAttribute('disabled', 'disabled');
   input.setAttribute('disabled', 'disabled');
-
-  // Функція відліку та виводу часу
-  function countdown() {
-    setInterval(() => {
-      // Змінна для зберігання різниці часу між обраною датою і поточною 
-      const timeLeft = convertMs(diffBetweenDate);
-
-      // Зупиняємо функцію якщо таймер скінчився 
-      if (diffBetweenDate <= 0) {
-        startBtn.removeAttribute('disabled');
-        input.removeAttribute('disabled');
-        return;
-      }
-      const days = document.querySelector('.value[data-days]');
-      const hours = document.querySelector('.value[data-hours]');
-      const minutes = document.querySelector('.value[data-minutes]');
-      const seconds = document.querySelector('.value[data-seconds]');
-      // Виводимо дані у відповідні поля на сторінці
-      days.innerHTML = addZero(timeLeft.days);
-      hours.innerHTML = addZero(timeLeft.hours);
-      minutes.innerHTML = addZero(timeLeft.minutes);
-      seconds.innerHTML = addZero(timeLeft.seconds);
-      // Віднімаємо від різниці у часі, для реалізації в таймері зменншення часу, відлік
-      diffBetweenDate -= 1000;
-    }, 1000);
-  }
 });
+
+// Функція відліку та виводу часу
+function countdown(diffBetweenDate) {
+  const intervalId = setInterval(() => {
+    // Змінна для зберігання різниці часу між обраною датою і поточною
+    const timeLeft = convertMs(diffBetweenDate);
+
+    // Зупиняємо функцію якщо таймер скінчився
+    if (diffBetweenDate <= 0) {
+      input.removeAttribute('disabled');
+      clearInterval(intervalId);
+      return;
+    }
+    const days = document.querySelector('.value[data-days]');
+    const hours = document.querySelector('.value[data-hours]');
+    const minutes = document.querySelector('.value[data-minutes]');
+    const seconds = document.querySelector('.value[data-seconds]');
+    // Виводимо дані у відповідні поля на сторінці
+    days.innerHTML = addZero(timeLeft.days);
+    hours.innerHTML = addZero(timeLeft.hours);
+    minutes.innerHTML = addZero(timeLeft.minutes);
+    seconds.innerHTML = addZero(timeLeft.seconds);
+    // Віднімаємо від різниці у часі, для реалізації в таймері зменншення часу, відлік
+    diffBetweenDate -= 1000;
+  }, 1000);
+}
+
 // Функція перетворення різниці в часу між обраною датою і поточною з мілісекунд в дні,години,хвилини та секунди
 function convertMs(ms) {
   // Number of milliseconds per unit of time
