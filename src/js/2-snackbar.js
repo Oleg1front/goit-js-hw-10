@@ -2,7 +2,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
-
+// функція ствоерння об`єкта для прередачі в проміс
 function createObj(delay, value, selectedState) {
   return {
     delay: delay,
@@ -10,43 +10,56 @@ function createObj(delay, value, selectedState) {
     shouldResolve: selectedState,
   };
 }
+  // Функція створення проміса
+
+const createPromise = ({ delay, value, shouldResolve }) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldResolve.toLowerCase() === 'fulfilled') {
+        resolve(value);
+      } else {
+        reject(value);
+      }
+    }, delay);
+  });
+};
 
 form.addEventListener('submit', evt => {
+  
+    // Прибираємо перезавантаження сторінки
   evt.preventDefault();
-
+  
+    //   Отримуємо доступ до інпутів
   const inputDelay = document.querySelector('[name="delay"]');
   const selectedState = document.querySelector('input[name="state"]:checked');
-
+  
+    //   Створюємо об`єкт параметрів для проміса зі значеннями інпутів
   const params = createObj(
     parseInt(inputDelay.value),
     parseInt(inputDelay.value),
     String(selectedState.value)
   );
-  const createPromise = params => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (params.shouldResolve.toLowerCase() === 'fulfilled') {
-          resolve(params.value);
-        } else {
-          reject(params.value);
-        }
-      }, params.delay);
-    });
-  };
+
+  // Обробляємо наш проміс і виводимо відповідні нотифікації
   createPromise(params)
-    .then(result => {
-      console.log(`✅ Fulfilled promise in ${result} ms`);
+    //   Проміс виконався успішно
+      .then(result => {
+        const message = `✅ Fulfilled promise in ${result} ms`;
+      console.log(message);
       iziToast.success({
         title: 'Success',
-        message: `✅ Fulfilled promise in ${result} ms`,
+          message: message,
       });
     })
-    .catch(error => {
-      console.error(`❌ Rejected promise in ${error}ms`);
+    // просім був відхилений
+      .catch(error => {
+        const message = `❌ Rejected promise in ${error}ms`
+      console.error(message);
       iziToast.error({
         title: 'Помилка',
-        message: `❌ Rejected promise in ${error}ms`,
+        message: message,
       });
     });
+  // Очищуємо форму після сабміту
   form.reset();
 });
