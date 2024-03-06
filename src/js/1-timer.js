@@ -48,10 +48,13 @@ startBtn.addEventListener('click', () => {
   startBtn.setAttribute('disabled', 'disabled');
   input.setAttribute('disabled', 'disabled');
 
+  // Функція відліку та виводу часу
   function countdown() {
     setInterval(() => {
+      // Змінна для зберігання різниці часу між обраною датою і поточною 
       const timeLeft = convertMs(diffBetweenDate);
 
+      // Зупиняємо функцію якщо таймер скінчився 
       if (diffBetweenDate <= 0) {
         startBtn.removeAttribute('disabled');
         input.removeAttribute('disabled');
@@ -61,17 +64,17 @@ startBtn.addEventListener('click', () => {
       const hours = document.querySelector('.value[data-hours]');
       const minutes = document.querySelector('.value[data-minutes]');
       const seconds = document.querySelector('.value[data-seconds]');
-
-      
+      // Виводимо дані у відповідні поля на сторінці
       days.innerHTML = addZero(timeLeft.days);
       hours.innerHTML = addZero(timeLeft.hours);
       minutes.innerHTML = addZero(timeLeft.minutes);
       seconds.innerHTML = addZero(timeLeft.seconds);
+      // Віднімаємо від різниці у часі, для реалізації в таймері зменншення часу, відлік
       diffBetweenDate -= 1000;
     }, 1000);
   }
 });
-
+// Функція перетворення різниці в часу між обраною датою і поточною з мілісекунд в дні,години,хвилини та секунди
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
@@ -90,7 +93,7 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-
+// Функція додавання 0 у відображенні на сторінці
 function addZero(str) {
- return String(str).padStart(2, '0');
+  return String(str).padStart(2, '0');
 }
